@@ -1,10 +1,15 @@
 #!/usr/bin/python3
 
+import sys
+from collections import OrderedDict
+from eth_typing import Hash32
+from eth_utils import big_endian_int
+
 import rlp
 from Crypto.Hash import keccak
 from rlp.sedes import BigEndianInt, big_endian_int, Binary, binary
 from rlp import encode
-from eth_utils import to_bytes, to hex
+from eth_utils import to_bytes, to_hex
 from web3 import IPCProvider, Web3
 
 
@@ -106,7 +111,7 @@ def check_pow(block_number: int,
 
         print("RESULT:    ", minging_output[b'result'])
         print("CONDITION: ", (2**256) // difficulty))
-        
+
         if mining_output[b'mix digest'] != mining_hash: #this is to say that if the mining digest is not equal to the mix hash, then...
             return False 
         elif big_endian_to_int(mining_output[b'result']) <= (2**256 // difficulty): #to convert the result int integer and check if it meets the condition of being less or equal to 2^256 divided by the difficulty
@@ -114,3 +119,15 @@ def check_pow(block_number: int,
         else:
             return True #if it returns true, then all good! We could do more checks but this is enough for now. For additional checks see here https://github.com/ethereum/py-evm/blob/d553bd405bbf41a1da0c227a614baba7b43e9449/eth/consensus/pow.py
 
+#the next section's objective is tomake sure that data is formated correctly and make sure we can get the proper hash and that the data is accurately fromated
+
+block_number = blockNumber
+myHash = "0x" + keccak.new(data=rlp.encode(myHeader), digest_bits=256).hexdigest()
+mining_hash = to_bytes(int(myHash, 16))
+
+mix_hash = to_bytes(int(w3.eth.getBlock(block_number).mixHash.hex(), 16))
+
+nonce = to_bytes(int(w3.eth.getBlock(block_number).nonce.hex(), 16))
+difficulty = myHeader.difficulty
+
+print("VALID: ",check_pow(block_number, mining_hash, nonce, difficulty)
