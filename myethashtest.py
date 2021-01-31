@@ -57,7 +57,7 @@ assert w3.isConnected()
 
 blockNumber = int(sys.argv[1], 10)
 
- myHeader = MiningBlockHeader(
+myHeader = MiningBlockHeader(
      parent_hash = to_bytes(int(w3.eth.getBlock(blockNumber).parentHash.hex(), 16)),
      uncles_hash = to_bytes(int(w3.eth.getBlock(blockNumber).sha3Uncles.hex(), 16)),
      coinbase = to_bytes(int(w3.eth.getBlock(blockNumber).miner, 16)),
@@ -90,11 +90,11 @@ def get_cache(block_number: int) -> bytes:
             return c
     # Generate the cache if it was not already in memory
     # Simulate requesting mkcache by block number: multiply index by epoch length
-         c = mkcache_bytes(epoch_index * EPOCH_LENGTH)
+        c = mkcache_bytes(epoch_index * EPOCH_LENGTH)
         cache_by_epoch[epoch_index] = c #stores the cash bytes generated
     # Limit memory usage for cache
-         if len(cache_by_epoch) > CACHE_MAX_ITEMS: #this is related to the lenght 
-        cache_by_epoch.popitem(last=False)  # remove last recently accessed
+        if len(cache_by_epoch) > CACHE_MAX_ITEMS: #this is related to the lenght 
+            cache_by_epoch.popitem(last=False)  # remove last recently accessed
         #ref line88
         return c
 #now we will write the check proof of work funtion. We need here to check if the data of the blocks is according to the requirements
@@ -110,7 +110,7 @@ def check_pow(block_number: int,
         print("MIX HASH:   ", w3.eth.getBlock(block_number).mixHash.hex())
 
         print("RESULT:    ", minging_output[b'result'])
-        print("CONDITION: ", (2**256) // difficulty))
+        print("CONDITION: ", (2**256 // difficulty))
 
         if mining_output[b'mix digest'] != mining_hash: #this is to say that if the mining digest is not equal to the mix hash, then...
             return False 
