@@ -75,7 +75,7 @@ myHeader = MiningBlockHeader(
     #nonce = to_bytes(int(w3.eth.getBlock(blockNumber).nonce.hex(), 16)),
 )
 
-from pyetash import hashimoto_light, mkcache_bytes
+from pyethash import hashimoto_light, mkcache_bytes
 
 # Type annotation here is to ensure we don't accidentally use strings instead of bytes.
 cache_by_epoch: 'OrderedDict[int, bytearray]' = OrderedDict() #here we cache by epoch order
