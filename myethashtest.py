@@ -110,7 +110,7 @@ def check_pow(block_number: int,
     print("MIX HASH:   ", w3.eth.getBlock(block_number).mixHash.hex())
 
     print("RESULT:    ", minging_output[b'result'])
-    print("CONDITION: ", (2**256) // difficulty))
+    print("CONDITION: ", (2**256) // difficulty)
 
     if mining_output[b'mix digest'] != mining_hash: #this is to say that if the mining digest is not equal to the mix hash, then...
         return False 
