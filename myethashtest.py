@@ -90,10 +90,10 @@ def get_cache(block_number: int) -> bytes:
             return c
     # Generate the cache if it was not already in memory
     # Simulate requesting mkcache by block number: multiply index by epoch length
-         c = mkcache_bytes(epoch_index * EPOCH_LENGTH)
+        c = mkcache_bytes(epoch_index * EPOCH_LENGTH)
         cache_by_epoch[epoch_index] = c #stores the cash bytes generated
     # Limit memory usage for cache
-         if len(cache_by_epoch) > CACHE_MAX_ITEMS: #this is related to the lenght 
+        if len(cache_by_epoch) > CACHE_MAX_ITEMS: #this is related to the lenght 
         cache_by_epoch.popitem(last=False)  # remove last recently accessed
         #ref line88
         return c
