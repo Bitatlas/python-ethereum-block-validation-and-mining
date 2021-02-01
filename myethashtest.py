@@ -57,7 +57,7 @@ assert w3.isConnected()
 
 blockNumber = int(sys.argv[1], 10)
 
- myHeader = MiningBlockHeader(
+myHeader = MiningBlockHeader(
     parent_hash = to_bytes(int(w3.eth.getBlock(blockNumber).parentHash.hex(), 16)),
     uncles_hash = to_bytes(int(w3.eth.getBlock(blockNumber).sha3Uncles.hex(), 16)),
     coinbase = to_bytes(int(w3.eth.getBlock(blockNumber).miner, 16)),
