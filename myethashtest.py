@@ -94,7 +94,7 @@ def get_cache(block_number: int) -> bytes:
         cache_by_epoch[epoch_index] = c #stores the cash bytes generated
     # Limit memory usage for cache
         if len(cache_by_epoch) > CACHE_MAX_ITEMS: #this is related to the lenght 
-        cache_by_epoch.popitem(last=False)  # remove last recently accessed
+            cache_by_epoch.popitem(last=False)  # remove last recently accessed
         #ref line88
         return c
 #now we will write the check proof of work funtion. We need here to check if the data of the blocks is according to the requirements
