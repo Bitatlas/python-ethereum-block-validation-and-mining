@@ -57,23 +57,23 @@ assert w3.isConnected()
 
 blockNumber = int(sys.argv[1], 10)
 
-myHeader = MiningBlockHeader(
-     parent_hash = to_bytes(int(w3.eth.getBlock(blockNumber).parentHash.hex(), 16)),
-     uncles_hash = to_bytes(int(w3.eth.getBlock(blockNumber).sha3Uncles.hex(), 16)),
-     coinbase = to_bytes(int(w3.eth.getBlock(blockNumber).miner, 16)),
-     state_root = to_bytes(int(w3.eth.getBlock(blockNumber).stateRoot.hex(), 16)),
-     transaction_root = to_bytes(int(w3.eth.getBlock(blockNumber).transactionsRoot.hex(), 16)),
-     receipt_root = to_bytes(int(w3.eth.getBlock(blockNumber).receiptsRoot.hex(), 16)),
-     bloom = int(w3.eth.getBlock(blockNumber).logsBloom.hex(), 16),
-     difficulty = w3.eth.getBlock(blockNumber).difficulty,
-     block_number = w3.eth.getBlock(blockNumber).number,
-     gas_limit = w3.eth.getBlock(blockNumber).gasLimit,
-     gas_used = w3.eth.getBlock(blockNumber).gasUsed,
-     timestamp = w3.eth.getBlock(blockNumber).timestamp,
-     extra_data = to_bytes(int(w3.eth.getBlock(blockNumber).extraData.hex(), 16)),
-     #mix_hash = to_bytes(int(w3.eth.getBlock(blockNumber).mixHash.hex(), 16)),
-     #nonce = to_bytes(int(w3.eth.getBlock(blockNumber).nonce.hex(), 16)),
- )
+ myHeader = MiningBlockHeader(
+    parent_hash = to_bytes(int(w3.eth.getBlock(blockNumber).parentHash.hex(), 16)),
+    uncles_hash = to_bytes(int(w3.eth.getBlock(blockNumber).sha3Uncles.hex(), 16)),
+    coinbase = to_bytes(int(w3.eth.getBlock(blockNumber).miner, 16)),
+    state_root = to_bytes(int(w3.eth.getBlock(blockNumber).stateRoot.hex(), 16)),
+    transaction_root = to_bytes(int(w3.eth.getBlock(blockNumber).transactionsRoot.hex(), 16)),
+    receipt_root = to_bytes(int(w3.eth.getBlock(blockNumber).receiptsRoot.hex(), 16)),
+    bloom = int(w3.eth.getBlock(blockNumber).logsBloom.hex(), 16),
+    difficulty = w3.eth.getBlock(blockNumber).difficulty,
+    block_number = w3.eth.getBlock(blockNumber).number,
+    gas_limit = w3.eth.getBlock(blockNumber).gasLimit,
+    gas_used = w3.eth.getBlock(blockNumber).gasUsed,
+    timestamp = w3.eth.getBlock(blockNumber).timestamp,
+    extra_data = to_bytes(int(w3.eth.getBlock(blockNumber).extraData.hex(), 16)),
+    #mix_hash = to_bytes(int(w3.eth.getBlock(blockNumber).mixHash.hex(), 16)),
+    #nonce = to_bytes(int(w3.eth.getBlock(blockNumber).nonce.hex(), 16)),
+)
 
 from pyetash import hashimoto_light, mkcache_bytes
 
@@ -82,19 +82,19 @@ cache_by_epoch: 'OrderedDict[int, bytearray]' = OrderedDict() #here we cache by 
 CACHE_MAX_ITEMS = 10 #and limit the items to 10
 
 def get_cache(block_number: int) -> bytes:
-        epoch_index = block_number // EPOCH_LENGTH #this is where we get the block number
-        # Get the cache if already generated, marking it as recently used
-        if epoch_index in cache_by_epoch:
-            c = cache_by_epoch.pop(epoch_index)  # pop and append at end
-            cache_by_epoch[epoch_index] = c
-            return c
+    epoch_index = block_number // EPOCH_LENGTH #this is where we get the block number
+    # Get the cache if already generated, marking it as recently used
+    if epoch_index in cache_by_epoch:
+        c = cache_by_epoch.pop(epoch_index)  # pop and append at end
+        cache_by_epoch[epoch_index] = c
+        return c
     # Generate the cache if it was not already in memory
     # Simulate requesting mkcache by block number: multiply index by epoch length
-        c = mkcache_bytes(epoch_index * EPOCH_LENGTH)
-        cache_by_epoch[epoch_index] = c #stores the cash bytes generated
+    c = mkcache_bytes(epoch_index * EPOCH_LENGTH)
+    cache_by_epoch[epoch_index] = c #stores the cash bytes generated
     # Limit memory usage for cache
-        if len(cache_by_epoch) > CACHE_MAX_ITEMS: #this is related to the lenght 
-            cache_by_epoch.popitem(last=False)  # remove last recently accessed
+    if len(cache_by_epoch) > CACHE_MAX_ITEMS: #this is related to the lenght 
+        cache_by_epoch.popitem(last=False)  # remove last recently accessed
         #ref line88
         return c
 #now we will write the check proof of work funtion. We need here to check if the data of the blocks is according to the requirements
@@ -103,21 +103,21 @@ def check_pow(block_number: int,
               mix_hash: Hash32,
               nonce: bytes,
               difficulty: int) -> None:
-        cache = get_cache(block_number) #we get cache by block number
-        mining_output = hashimoto_light(block_number, cache, mining_hash, big_endian_to_int(nonce)) #this is the hashimoto light mining output. It takes block_number, cache, mining_hash, big_endian_to_int(nonce) and hash it
+    cache = get_cache(block_number) #we get cache by block number
+    mining_output = hashimoto_light(block_number, cache, mining_hash, big_endian_to_int(nonce)) #this is the hashimoto light mining output. It takes block_number, cache, mining_hash, big_endian_to_int(nonce) and hash it
 
-        print("MIX Digest: ", mining_output[b'mix digest'])
-        print("MIX HASH:   ", w3.eth.getBlock(block_number).mixHash.hex())
+    print("MIX Digest: ", mining_output[b'mix digest'])
+    print("MIX HASH:   ", w3.eth.getBlock(block_number).mixHash.hex())
 
-        print("RESULT:    ", minging_output[b'result'])
-        print("CONDITION: ", (2**256 // difficulty))
+    print("RESULT:    ", minging_output[b'result'])
+    print("CONDITION: ", (2**256) // difficulty))
 
-        if mining_output[b'mix digest'] != mining_hash: #this is to say that if the mining digest is not equal to the mix hash, then...
-            return False 
-        elif big_endian_to_int(mining_output[b'result']) <= (2**256 // difficulty): #to convert the result int integer and check if it meets the condition of being less or equal to 2^256 divided by the difficulty
-            return False
-        else:
-            return True #if it returns true, then all good! We could do more checks but this is enough for now. For additional checks see here https://github.com/ethereum/py-evm/blob/d553bd405bbf41a1da0c227a614baba7b43e9449/eth/consensus/pow.py
+    if mining_output[b'mix digest'] != mining_hash: #this is to say that if the mining digest is not equal to the mix hash, then...
+        return False 
+    elif big_endian_to_int(mining_output[b'result']) <= (2**256 // difficulty): #to convert the result int integer and check if it meets the condition of being less or equal to 2^256 divided by the difficulty
+        return False
+    else:
+        return True #if it returns true, then all good! We could do more checks but this is enough for now. For additional checks see here https://github.com/ethereum/py-evm/blob/d553bd405bbf41a1da0c227a614baba7b43e9449/eth/consensus/pow.py
 
 #the next section's objective is tomake sure that data is formated correctly and make sure we can get the proper hash and that the data is accurately fromated
 
