@@ -130,4 +130,4 @@ mix_hash = to_bytes(int(w3.eth.getBlock(block_number).mixHash.hex(), 16))
 nonce = to_bytes(int(w3.eth.getBlock(block_number).nonce.hex(), 16))
 difficulty = myHeader.difficulty
 
-print("VALID: ",check_pow(block_number, mining_hash, nonce, difficulty))
+print("VALID: ",check_pow(block_number, mining_hash, mix_hash, nonce, difficulty))
